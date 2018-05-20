@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: eMQpp+6ch9d5teeMxFMiFJAPWAXaaaqdzSBiLvKbkiSTpbvXPar2E/R+M16dQGzMamOXkUBeMOVAEo/19EmzRJS1DwgM0ouXI73RXUHTPaTA/QpxODfyHwI2BrfQbPxq3lG03SPHRBvhzCtjw70UDanjPnOyZcY9iOSwsJlzkdvsmXXFnNaIMhI/xedm0lyzWnz+NZ+3kw+Ku25k5Nb82F5gBY7wqXtX+RPydDzKD4Z++AngT6CSZyJMu+XYxoTSjtpetx+jLQ8AfTq22ABj+CDbPm2EoFj/lAwztAZR2L2wM2njaV6F53KRpOitrhuDd7sq6BXEMlI0eBjVryxTP5oYB42B7fHPPDJnTyhzcFw2F8o6z8SY91a236bUFfgMj3a0TwT4CfFz6nbHtHANjsG1s3GOIw+C0qtm6AmZPepL+5+JtAiDNTSMK/sQCh53a5HHVyGqdQbZRzymi2yjLscaoG4uojcNhuHWdhvKHPSyYOa18HmqoG/lNCT6Qqz4LUPmb/OI3E0exd61W5BdmMWBlhK7+XJXEgQ3jdef2cQiO8EqwqLYKKear7SPQF1gZdqHbT0d0daUFr0PYwA/zqIZuVoyV5x6XOvrQuQc45EJXgYdbUWYT9MYhbN0BVI1H1z4gM9kA2A4Gv3gqSzxWk+PX6KLCnd/hzUljSOaEuk=
+  app: quiet-springs-62758
+  on:
+    repo: sharihobbs/tome-api
