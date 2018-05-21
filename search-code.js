@@ -1,8 +1,11 @@
+
+// require('dotenv').config();
+
 // const API_BASE_URL = 'https://www.googleapis.com/books/v1';
 // const books = require('google-books-search');
 
 // const options = {
-//     key: 'AIzaSyCT4yG_nrcA4oAqxl7CA4ipQGv0j8isBac',
+//     key: 'API_KEY',
 //     field: null,
 //     offset: 0,
 //     limit: 9,
