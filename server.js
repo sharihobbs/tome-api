@@ -1,19 +1,18 @@
 'use strict'
 
-require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const {DATABASE_URL, PORT, CLIENT_ORIGIN} = require('./config');
-
+const {Book} = require('./models');
+const {searchBooks} = require('./search')
 app.use(express.static('public'));
 app.use(morgan('common'));
-
-const {router: listRouter} = require('./listRouter');
-app.use('api/readinglist', listRouter);
 
 app.use(
   cors({
@@ -21,21 +20,76 @@ app.use(
   })
 );
 
-// CORS - do I need this? because look above...
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
-  if (req.method === 'OPTIONS') {
-    return res.send(204);
-  }
-  next();
+// GET Endpoints
+app.get('/api/readinglist/books', (req, res) => {
+  console.log('get endpoint hit');
+  Book
+    .find()
+    .then(books => {
+      res.json({
+        books: books.map(
+          (book) => book.serialize())
+      });
+      console.log(`'book:', ${JSON.stringify(books[1])}`);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Something went wrong' });
+    });
 });
 
-// initial config to test connection
-// app.get('/api/*', (req, res) => {
-//  res.json({ok: true});
-// });
+// POST Endpoints
+app.post('/api/readinglist/books/add', jsonParser, (req, res) => {
+  const requiredFields = ['thumbnail', 'title', 'author', 'isbn'];
+  for(let i = 0; i < requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Missing \`${field}\` in request body`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+
+  Book
+    .create({
+      thumbnail: req.body.thumbnail,
+      title: req.body.title,
+      author: req.body.author,
+      isbn: req.body.isbn,
+      note: req.body.note
+    })
+    .then(book => res.status(201).json(book.serialize()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: `Internal server error: ${err}`});
+    });
+});
+
+
+app.post('/api/search', jsonParser, (req, res) => {
+  if (!req.body.query) {
+    return res.status(400).send('no query in request body');
+  }
+  searchBooks(req.body.query)
+  .then(results => res.status(200).json(results))
+  .catch(err => {
+    console.error(err)
+    res.status(500).json({message: `Internal server err: ${err}`})
+  })
+})
+
+// DELETE Endpoints
+app.delete('/api/readinglist/books/remove/:id', (req, res) => {
+  Book
+    .findByIdAndRemove(req.params.id)
+    .then(() => {
+      res.status(204).json({ message: 'Successful deletion' });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Something went wrong when deleting' });
+    });
+});
 
 
 
@@ -80,6 +134,20 @@ if (require.main === module) {
   runServer(DATABASE_URL).catch(err => console.error(err));
 }
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-
 module.exports = {app, runServer, closeServer};
+
+
+
+// CORS - do I need this? because look above...
+// app.use(function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+//   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE');
+//   if (req.method === 'OPTIONS') {
+//     return res.send(204);
+//   }
+//   next();
+// });
+
+//  res.json({ok: true});
+// });

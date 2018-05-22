@@ -1,6 +1,5 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const faker = require('faker');
 const mongoose = require('mongoose');
 
 const expect = chai.expect;
@@ -9,22 +8,24 @@ const {Book} = require('../models');
 const {app, runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config');
 
+const TEST_BOOKS_LEN = 10
+
 chai.use(chaiHttp);
 
 function createNewBook() {
   return {
-    thumbnail: faker.image.imageURL(),
-    title: faker.name.title,
-    author: faker.lorem.words,
-    isbn: faker.random.number,
-    note: faker.lorem.text
+    thumbnail: 'THUMBNAIL_URL',
+    title: 'TITLE',
+    author: 'AUTHOR',
+    isbn: 'ISBN',
+    note: 'NOTE'
   }
 }
 
 function seedData() {
   console.info('Seeding book data');
   const seedData = [];
-  for (let i=1; i<=10; i++) {
+  for (let i=1; i<=TEST_BOOKS_LEN; i++) {
     seedData.push(createNewBook());
   }
   return Book.insertMany(seedData);
@@ -53,18 +54,26 @@ describe('Books API resource', function() {
     return closeServer();
   });
 
+  // original test for wiring purposes only
+  describe('API', function() {
+   it('should 200 on GET requests', function() {
+    return chai.request(app)
+     .get('/api/readinglist/books')
+     .then(function(res) {
+       expect(res).to.have.status(200);
+       expect(res).to.be.json;
+    });
+   });
+  });
 
   describe('API GET endpoint', function() {
-
     it('should return all books in the Reading List on GET', function() {
       return chai.request(app)
       .get('/api/readinglist/books')
       .then(function(res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res).to.be.a('object');
-        expect(res.body.length).to.be.above(0);
-        res.body.forEach(function(item) {
+        expect(res.body.books.length).to.equal(TEST_BOOKS_LEN);
+        res.body.books.forEach(function(item) {
             expect(item).to.be.a('object');
             expect(item).to.include.keys(
               'id', 'thumbnail', 'title', 'author', 'isbn');
@@ -74,13 +83,10 @@ describe('Books API resource', function() {
   });
 
   describe('API POST endpoint', function() {
-
     it('should add a new book to the ReadingList on POST', function() {
-
       const newBook = createNewBook();
-
       return chai.request(app)
-      .post('api/readinglist/books/add')
+      .post('/api/readinglist/books/add')
       .send(newBook)
       .then(function(res) {
         expect(res).to.have.status(201);
@@ -104,14 +110,14 @@ describe('Books API resource', function() {
   });
 
   describe('API DELETE endpoint', function() {
-
     it('should delete a single book by id on DELETE', function() {
       let book;
       return Book.findOne()
       .then(_book => {
         book = _book;
+        console.log('book.id:', book.id)
         return chai.request(app)
-        .delete(`/api/readinglist/books/remove:${book.id}`)
+        .delete(`/api/readinglist/books/remove/${book.id}`)
         .then(res => {
           expect(res).to.have.status(204);
           return Book.findById(book.id)
@@ -123,8 +129,6 @@ describe('Books API resource', function() {
     });
   });
 });
-
-
 
 
 // original test for wiring purposes only
