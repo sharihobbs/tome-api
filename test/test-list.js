@@ -131,20 +131,6 @@ describe('Books API resource', function() {
 });
 
 
-// original test for wiring purposes only
-// describe('API', function() {
-
-//  it('should 200 on GET requests', function() {
-//    return chai.request(app)
-//      .get('/api/fooooo')
-//      .then(function(res) {
-//        expect(res).to.have.status(200);
-//        expect(res).to.be.json;
-//      });
-//  });
-// });
-
-
 
 
 
