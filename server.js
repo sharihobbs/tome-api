@@ -22,7 +22,6 @@ app.use(
 
 // GET Endpoints
 app.get('/api/readinglist/books', (req, res) => {
-  console.log('get endpoint hit');
   Book
     .find()
     .then(books => {
@@ -30,7 +29,6 @@ app.get('/api/readinglist/books', (req, res) => {
         books: books.map(
           (book) => book.serialize())
       });
-      console.log(`'book:', ${JSON.stringify(books[1])}`);
     })
     .catch(err => {
       console.error(err);
@@ -65,8 +63,8 @@ app.post('/api/readinglist/books/add', jsonParser, (req, res) => {
     });
 });
 
-
 app.post('/api/search', jsonParser, (req, res) => {
+  console.log('req.body:', req.body)
   if (!req.body.query) {
     return res.status(400).send('no query in request body');
   }
@@ -83,7 +81,7 @@ app.delete('/api/readinglist/books/remove/:id', (req, res) => {
   Book
     .findByIdAndRemove(req.params.id)
     .then(() => {
-      res.status(204).json({ message: 'Successful deletion' });
+      res.status(200).json({ message: 'Successful deletion' });
     })
     .catch(err => {
       console.error(err);

@@ -1,6 +1,4 @@
 const config = require('./config')
-
-// const API_BASE_URL = 'https://www.googleapis.com/books/v1';
 const books = require('google-books-search');
 const Promise = require('bluebird')
 

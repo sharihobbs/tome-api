@@ -54,7 +54,6 @@ describe('Books API resource', function() {
     return closeServer();
   });
 
-  // original test for wiring purposes only
   describe('API', function() {
    it('should 200 on GET requests', function() {
     return chai.request(app)
@@ -115,11 +114,10 @@ describe('Books API resource', function() {
       return Book.findOne()
       .then(_book => {
         book = _book;
-        console.log('book.id:', book.id)
         return chai.request(app)
         .delete(`/api/readinglist/books/remove/${book.id}`)
         .then(res => {
-          expect(res).to.have.status(204);
+          expect(res).to.have.status(200);
           return Book.findById(book.id)
           .then(_book => {
             expect(_book).to.not.exist;
