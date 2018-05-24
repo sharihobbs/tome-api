@@ -28,7 +28,7 @@ function searchBooks(query, page) {
         return reject(err)
       } else {
         _.map(results, book => {
-          console.log(options.offset, book.id, book.title, book.authors, book.industryIdentifiers);
+            (options.offset, book.id, book.title, book.authors, book.industryIdentifiers);
         });
         googleBooks = removeDuplicates(results, results.id);
         return resolve(googleBooks.slice(0, 9));
