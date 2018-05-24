@@ -68,7 +68,7 @@ app.post('/api/search', jsonParser, (req, res) => {
   if (!req.body.query) {
     return res.status(400).send('no query in request body');
   }
-  searchBooks(req.body.query)
+  searchBooks(req.body.query, req.body.page)
   .then(results => res.status(200).json(results))
   .catch(err => {
     console.error(err)
