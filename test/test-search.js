@@ -16,17 +16,36 @@ describe('Search API resource', function() {
     return closeServer();
   });
   describe('Search POST endpoint', function() {
+    let page1BookIds = []
+    let page2BookIds = []
     it('should return results on POST', function() {
       return chai.request(app)
       .post('/api/search')
-      .send({query: 'Barron\'s Mechanical Aptitude and Spatial Relations Test, 3rd edition'})
+      .send({query: 'Javascript'})
       .then(function(res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a('array')
         expect(res.body.length).to.equal(9)
         res.body.forEach(book => {
           expect(book).to.include.keys(['authors', 'title', 'thumbnail', 'industryIdentifiers'])
+          page1BookIds.push(book.industryIdentifiers[0].identifier)
         })
+      })
+    });
+
+    it('should return page 2 results on POST', function() {
+      return chai.request(app)
+      .post('/api/search')
+      .send({query: 'Javascript', page: 2})
+      .then(function(res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.a('array')
+        expect(res.body.length).to.equal(9)
+        res.body.forEach(book => {
+          expect(book).to.include.keys(['authors', 'title', 'thumbnail', 'industryIdentifiers'])
+          page2BookIds.push(book.industryIdentifiers[0].identifier)
+        })
+        expect(page2BookIds).to.not.have.members(page1BookIds)
       })
     });
 
