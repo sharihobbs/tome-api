@@ -3,7 +3,7 @@ const books = require('google-books-search');
 const Promise = require('bluebird')
 const _ = require('lodash')
 
-const SEARCH_LIMIT = 9
+const SEARCH_LIMIT = 36
 const options = {
     key: config.API_KEY,
     offset: 0,
@@ -20,10 +20,7 @@ function searchBooks(query, page) {
       if (err) {
         return reject(err)
       } else {
-        _.map(results, book => {
-          console.log(options.offset, book.id, book.title, book.authors, book.industryIdentifiers)
-        })
-        return resolve(results)
+        return resolve(_.uniqBy(results, 'id').slice(0, 9));
       }
     })
   })
