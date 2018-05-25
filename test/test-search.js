@@ -37,7 +37,7 @@ describe('Search API resource', function() {
       .then(function(res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a('array')
-        expect(res.body.length).to.be.at.least(100)
+        expect(res.body.length).to.be.at.least(50)
         page1BookIds = _.map(res.body, 'googleId')
       })
     })
@@ -49,7 +49,7 @@ describe('Search API resource', function() {
       .then(function(res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a('array')
-        expect(res.body.length).to.be.at.least(100)
+        expect(res.body.length).to.be.at.least(50)
         page2BookIds = _.map(res.body, 'googleId')
         expect(page2BookIds).to.not.have.members(page1BookIds)
       })

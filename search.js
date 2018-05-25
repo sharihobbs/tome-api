@@ -4,7 +4,7 @@ const Promise = require('bluebird')
 const _ = require('lodash')
 
 const SEARCH_LIMIT = 36
-const BOOK_BATCH_LIMIT = 4
+const BOOK_BATCH_LIMIT = 2
 
 const options = {
     key: config.API_KEY,
