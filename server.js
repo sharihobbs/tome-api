@@ -64,7 +64,6 @@ app.post('/api/readinglist/books/add', jsonParser, (req, res) => {
 });
 
 app.post('/api/search', jsonParser, (req, res) => {
-  console.log('req.body:', req.body)
   if (!req.body.query) {
     return res.status(400).send('no query in request body');
   }

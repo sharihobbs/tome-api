@@ -13,22 +13,14 @@ const options = {
     lang: 'en'
 };
 
-function removeDuplicates(array, prop) {
-  return array.filter((obj, pos, arr) => {
-    return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop] === pos)
-  })
-}
-
 function searchBooks(query, page) {
   options.offset = !page || page === 1 ? 0 : offsetForPage(page, SEARCH_LIMIT)
   return new Promise(function (resolve, reject) {
     books.search(query, options, function(err, results) {
-      let googleBooks = [];
       if (err) {
         return reject(err)
       } else {
-        googleBooks = removeDuplicates(results, results.id);
-        return resolve(googleBooks.slice(0, 9));
+        return resolve(_.uniqBy(results, 'id').slice(0, 9));
       }
     })
   })
