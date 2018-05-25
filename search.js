@@ -4,6 +4,8 @@ const Promise = require('bluebird')
 const _ = require('lodash')
 
 const SEARCH_LIMIT = 36
+const BOOK_BATCH_LIMIT = 4
+
 const options = {
     key: config.API_KEY,
     offset: 0,
@@ -14,23 +16,39 @@ const options = {
 };
 
 function searchBooks(query, page) {
-  options.offset = !page || page === 1 ? 0 : offsetForPage(page, SEARCH_LIMIT)
+  let promises = []
+  let offset = offsetForPage(page, SEARCH_LIMIT)
+  for (let i = 1; i <= BOOK_BATCH_LIMIT; i++) {
+    promises.push(fetchBooks(query, _.merge({}, options, {
+      offset: offset
+    })))
+    offset = offset + SEARCH_LIMIT
+  }
+  return Promise.all(promises)
+  .then(results => _.chain(results)
+                    .flatten()
+                    .uniqBy('id')
+                    .value()
+  )
+}
+
+function fetchBooks(query, options) {
   return new Promise(function (resolve, reject) {
     books.search(query, options, function(err, results) {
       if (err) {
         return reject(err)
       } else {
-        return resolve(_.uniqBy(results, 'id').slice(0, 9));
+        return resolve(results)
       }
     })
   })
 }
 
-module.exports = {
-  searchBooks
+function offsetForPage(page, limit) {
+  page = (_.toSafeInteger(page) && page > 0) ? page : 1
+  return (page - 1) * (limit * BOOK_BATCH_LIMIT)
 }
 
-function offsetForPage (page, limit) {
-  page = (_.toSafeInteger(page) && page > 0) ? page : 1
-  return (page - 1) * limit
+module.exports = {
+  searchBooks
 }

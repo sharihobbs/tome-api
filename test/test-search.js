@@ -1,6 +1,7 @@
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 const expect = chai.expect
+const _ = require('lodash')
 const {app, runServer, closeServer} = require('../server')
 const {TEST_DATABASE_URL} = require('../config')
 
@@ -36,11 +37,8 @@ describe('Search API resource', function() {
       .then(function(res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a('array')
-        expect(res.body.length).to.equal(9)
-        res.body.forEach(book => {
-          expect(book).to.include.keys(['authors', 'title', 'thumbnail', 'industryIdentifiers'])
-          page1BookIds.push(book.industryIdentifiers[0].identifier)
-        })
+        expect(res.body.length).to.be.at.least(100)
+        page1BookIds = _.map(res.body, 'id')
       })
     })
 
@@ -51,10 +49,8 @@ describe('Search API resource', function() {
       .then(function(res) {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a('array')
-        expect(res.body.length).to.equal(9)
-        res.body.forEach(book => {
-          page2BookIds.push(book.industryIdentifiers[0].identifier)
-        })
+        expect(res.body.length).to.be.at.least(100)
+        page2BookIds = _.map(res.body, 'id')
         expect(page2BookIds).to.not.have.members(page1BookIds)
       })
     })
