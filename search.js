@@ -38,7 +38,9 @@ function fetchBooks(query, options) {
       if (err) {
         return reject(err)
       } else {
-        return resolve(results)
+        return resolve(_.map(results, result =>
+          _.assign({}, result, {googleId: result.id})
+        ))
       }
     })
   })

@@ -38,7 +38,7 @@ app.get('/api/readinglist/books', (req, res) => {
 
 // POST Endpoints
 app.post('/api/readinglist/books/add', jsonParser, (req, res) => {
-  const requiredFields = ['thumbnail', 'title', 'author', 'isbn'];
+  const requiredFields = ['thumbnail', 'title', 'author', 'isbn', 'googleId'];
   for(let i = 0; i < requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -54,7 +54,8 @@ app.post('/api/readinglist/books/add', jsonParser, (req, res) => {
       title: req.body.title,
       author: req.body.author,
       isbn: req.body.isbn,
-      note: req.body.note
+      note: req.body.note,
+      googleId: req.body.googleId
     })
     .then(book => res.status(201).json(book.serialize()))
     .catch(err => {

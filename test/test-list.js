@@ -18,7 +18,8 @@ function createNewBook() {
     title: 'TITLE',
     author: 'AUTHOR',
     isbn: 'ISBN',
-    note: 'NOTE'
+    note: 'NOTE',
+    googleId: 'ABCDEFGHI'
   }
 }
 
@@ -75,7 +76,7 @@ describe('Books API resource', function() {
         res.body.books.forEach(function(item) {
             expect(item).to.be.a('object');
             expect(item).to.include.keys(
-              'id', 'thumbnail', 'title', 'author', 'isbn');
+              'id', 'thumbnail', 'title', 'author', 'isbn', 'googleId');
         });
       });
     });
@@ -92,11 +93,12 @@ describe('Books API resource', function() {
         expect(res).to.be.json;
         expect(res.body).to.be.a('object');
         expect(res.body).to.include.keys(
-          'id', 'thumbnail', 'title', 'author', 'isbn', 'note');
+          'id', 'thumbnail', 'title', 'author', 'isbn', 'note', 'googleId');
         expect(res.body.title).to.equal(newBook.title);
         expect(res.body.id).to.not.be.null;
         expect(res.body.author).to.equal(newBook.author);
         expect(res.body.isbn).to.equal(newBook.isbn);
+        expect(res.body.googleId).to.equal(newBook.googleId);
         return Book.findById(res.body.id);
       })
       .then(function(book) {
@@ -104,6 +106,7 @@ describe('Books API resource', function() {
         expect(book.title).to.equal(newBook.title);
         expect(book.author).to.equal(newBook.author);
         expect(book.isbn).to.equal(newBook.isbn);
+        expect(book.googleId).to.equal(newBook.googleId);
       });
     });
   });
