@@ -18,16 +18,16 @@ describe('Search API resource', function() {
     'thumbnail'
   ]
   let googleMock
-  let searchResults1
-  let searchResults2
-  let searchResults3
-  let searchResults4
+  let searchPage1
+  let searchPage2
+  let searchPage3
+  let searchPage4
 
   before(function() {
-    searchResults1 = generateSearchResults(1)
-    searchResults2 = generateSearchResults(2)
-    searchResults3 = generateSearchResults(3)
-    searchResults4 = generateSearchResults(4)
+    searchPage1 = generateSearchResults(1)
+    searchPage2 = generateSearchResults(2)
+    searchPage3 = generateSearchResults(3)
+    searchPage4 = generateSearchResults(4)
 
     return runServer(TEST_DATABASE_URL);
   })
@@ -65,14 +65,14 @@ describe('Search API resource', function() {
         .query(function(params) {
           return params.startIndex == 0
         })
-        .reply(200, {items: searchResults1})
+        .reply(200, {items: searchPage1})
 
         googleMock
         .get('/books/v1/volumes')
         .query(function(params) {
           return params.startIndex == 36
         })
-        .reply(200, {items: searchResults2})
+        .reply(200, {items: searchPage2})
 
         return chai.request(app)
         .post('/api/search')
@@ -94,14 +94,14 @@ describe('Search API resource', function() {
         .query(function(params) {
           return params.startIndex == 72
         })
-        .reply(200, {items: searchResults3})
+        .reply(200, {items: searchPage3})
 
         googleMock
         .get('/books/v1/volumes')
         .query(function(params) {
           return params.startIndex == 108
         })
-        .reply(200, {items: searchResults4})
+        .reply(200, {items: searchPage4})
 
         return chai.request(app)
         .post('/api/search')
