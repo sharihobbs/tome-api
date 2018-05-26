@@ -78,9 +78,9 @@ describe('Search API resource', function() {
         .post('/api/search')
         .send({query: 'Javascript'})
         .then(function(res) {
-          expect(res).to.have.status(200);
+          expect(res).to.have.status(200)
           expect(res.body).to.be.a('array')
-          expect(res.body.length).to.be.at.least(50)
+          expect(res.body.length).to.be.equal(72)
           _.map(res.body, book => {
             expect(book).to.include.keys(expectedBookKeys)
           })
@@ -107,9 +107,9 @@ describe('Search API resource', function() {
         .post('/api/search')
         .send({query: 'Javascript', page: 2})
         .then(function(res) {
-          expect(res).to.have.status(200);
+          expect(res).to.have.status(200)
           expect(res.body).to.be.a('array')
-          expect(res.body.length).to.be.at.least(50)
+          expect(res.body.length).to.be.equal(72)
           _.map(res.body, book => {
             expect(book).to.include.keys(expectedBookKeys)
           })
@@ -125,7 +125,7 @@ function generateSearchResults(batchNum) {
   const BATCH_SIZE = 36
   const START = (batchNum === 1) ? batchNum : batchNum * BATCH_SIZE
   let results = []
-  for (let i = 0; i <= BATCH_SIZE; i++) {
+  for (let i = 0; i < BATCH_SIZE; i++) {
     let idx = START + i
     results.push({
       'id': 'GOOGLEID' + idx,
