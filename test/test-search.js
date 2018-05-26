@@ -9,7 +9,14 @@ const {TEST_DATABASE_URL} = require('../config')
 chai.use(chaiHttp);
 
 describe('Search API resource', function() {
-  const expectedBookKeys = ['title', 'id', 'authors', 'industryIdentifiers', 'googleId', 'thumbnail']
+  const expectedBookKeys = [
+    'title',
+    'id',
+    'authors',
+    'industryIdentifiers',
+    'googleId',
+    'thumbnail'
+  ]
   let googleMock
   let searchResults1
   let searchResults2
@@ -75,7 +82,7 @@ describe('Search API resource', function() {
           expect(res.body).to.be.a('array')
           expect(res.body.length).to.be.at.least(50)
           _.map(res.body, book => {
-            expect(book).to.contain.keys(expectedBookKeys)
+            expect(book).to.include.keys(expectedBookKeys)
           })
           page1BookIds = _.map(res.body, 'googleId')
         })
@@ -104,7 +111,7 @@ describe('Search API resource', function() {
           expect(res.body).to.be.a('array')
           expect(res.body.length).to.be.at.least(50)
           _.map(res.body, book => {
-            expect(book).to.contain.keys(expectedBookKeys)
+            expect(book).to.include.keys(expectedBookKeys)
           })
           page2BookIds = _.map(res.body, 'googleId')
           expect(page2BookIds).to.not.have.members(page1BookIds)
