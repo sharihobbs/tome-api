@@ -18,7 +18,8 @@ function createNewBook() {
     title: 'TITLE',
     author: 'AUTHOR',
     isbn: 'ISBN',
-    note: 'NOTE'
+    note: 'NOTE',
+    googleId: 'ABCDEFGHI'
   }
 }
 
@@ -41,6 +42,15 @@ function tearDownDb() {
 }
 
 describe('Books API resource', function() {
+  const expectedBookKeys = [
+    'id',
+    'thumbnail',
+    'title',
+    'author',
+    'isbn',
+    'googleId'
+  ]
+
   before(function() {
     return runServer(TEST_DATABASE_URL);
   });
@@ -74,8 +84,7 @@ describe('Books API resource', function() {
         expect(res.body.books.length).to.equal(TEST_BOOKS_LEN);
         res.body.books.forEach(function(item) {
             expect(item).to.be.a('object');
-            expect(item).to.include.keys(
-              'id', 'thumbnail', 'title', 'author', 'isbn');
+            expect(item).to.include.keys(expectedBookKeys);
         });
       });
     });
@@ -91,12 +100,12 @@ describe('Books API resource', function() {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
         expect(res.body).to.be.a('object');
-        expect(res.body).to.include.keys(
-          'id', 'thumbnail', 'title', 'author', 'isbn', 'note');
+        expect(res.body).to.include.keys(expectedBookKeys);
         expect(res.body.title).to.equal(newBook.title);
         expect(res.body.id).to.not.be.null;
         expect(res.body.author).to.equal(newBook.author);
         expect(res.body.isbn).to.equal(newBook.isbn);
+        expect(res.body.googleId).to.equal(newBook.googleId);
         return Book.findById(res.body.id);
       })
       .then(function(book) {
@@ -104,6 +113,7 @@ describe('Books API resource', function() {
         expect(book.title).to.equal(newBook.title);
         expect(book.author).to.equal(newBook.author);
         expect(book.isbn).to.equal(newBook.isbn);
+        expect(book.googleId).to.equal(newBook.googleId);
       });
     });
   });

@@ -8,7 +8,8 @@ const bookSchema =  mongoose.Schema({
   title: {type: String, required: true},
   author: {type: String, required: true},
   isbn: {type: String, required: true},
-  note: {type: String, required: false}
+  note: {type: String, required: false},
+  googleId: {type: String, required: true}
  });
 
 bookSchema.methods.serialize = function() {
@@ -18,7 +19,8 @@ bookSchema.methods.serialize = function() {
     title: this.title,
     author: this.author,
     isbn: this.isbn,
-    note: this.note
+    note: this.note,
+    googleId: this.googleId
   };
 }
 
